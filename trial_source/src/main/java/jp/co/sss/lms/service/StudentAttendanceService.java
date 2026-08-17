@@ -1,6 +1,7 @@
 package jp.co.sss.lms.service;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -256,7 +257,8 @@ public class StudentAttendanceService {
 
 		return attendanceForm;
 	}
-
+	
+	
 	/**
 	 * 勤怠登録・更新処理
 	 * 
@@ -333,5 +335,25 @@ public class StudentAttendanceService {
 		// 完了メッセージ
 		return messageUtil.getMessage(Constants.PROP_KEY_ATTENDANCE_UPDATE_NOTICE);
 	}
+	
+	/**
+	 * 過去日の未入力チェック
+	 * @param date
+	 * @param 
+	 */
+	public boolean notEnterCheck(Integer lmsUserId) throws ParseException{
+		//削除フラグを0にする
+		Short deleteFlg = 0;
+		//今日の日付を取得
+		Date date = new Date();
+		//SimpleDateFormatの基準方法を設定する
+		SimpleDateFormat simpleDate = new SimpleDateFormat("yyyy/MM/dd");
+		//今日の研修日を基準方法で出力
+		Date currentDate = simpleDate.parse(simpleDate.format(date));
+		//Mapperクラスを使用し対象の数を出力
+		Integer count = tStudentAttendanceMapper.notEnterCount(lmsUserId, deleteFlg, currentDate);
+		 return count> 0;
+	}
+
 
 }
