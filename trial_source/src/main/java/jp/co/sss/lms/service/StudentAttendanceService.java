@@ -339,7 +339,7 @@ public class StudentAttendanceService {
 	/**
 	 * 過去日の未入力チェック
 	 * @param lmsUserId
-	 * @return  未入力数
+	 * @return  過去日勤怠の未入力数
 	 * @throws ParseException
 	 */
 	public boolean notEnterCheck(Integer lmsUserId) throws ParseException{
