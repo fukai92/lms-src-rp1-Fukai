@@ -27,7 +27,7 @@ import jp.co.sss.lms.util.TrainingTime;
 /**
  * 勤怠情報（受講生入力）サービス
  * 
- * @author 東京ITスクール
+ * @author 東京ITスクール - Task.25
  */
 @Service
 public class StudentAttendanceService {
@@ -338,8 +338,9 @@ public class StudentAttendanceService {
 	
 	/**
 	 * 過去日の未入力チェック
-	 * @param date
-	 * @param 
+	 * @param lmsUserId
+	 * @return  未入力数
+	 * @throws ParseException
 	 */
 	public boolean notEnterCheck(Integer lmsUserId) throws ParseException{
 		//削除フラグを0にする
