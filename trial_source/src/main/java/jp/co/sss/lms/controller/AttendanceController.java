@@ -19,7 +19,7 @@ import jp.co.sss.lms.util.Constants;
 /**
  * 勤怠管理コントローラ
  * 
- * @author 東京ITスクール - Task.25
+ * @author 東京ITスクール 
  */
 @Controller
 @RequestMapping("/attendance")
@@ -31,7 +31,7 @@ public class AttendanceController {
 	private LoginUserDto loginUserDto;
 
 	/**
-	 * 勤怠管理画面 初期表示
+	 * 勤怠管理画面 初期表示 
 	 * 
 	 * @param lmsUserId
 	 * @param courseId
@@ -42,13 +42,15 @@ public class AttendanceController {
 	@RequestMapping(path = "/detail", method = RequestMethod.GET)
 	public String index(Model model) throws ParseException {
 
+		//深井律輝 - Task.25
+		boolean notEnterFlg = studentAttendanceService.notEnterCheck();
+		model.addAttribute("notEnterFlg", notEnterFlg);
 		// 勤怠一覧の取得
 		List<AttendanceManagementDto> attendanceManagementDtoList = studentAttendanceService
 				.getAttendanceManagement(loginUserDto.getCourseId(), loginUserDto.getLmsUserId());
 		model.addAttribute("attendanceManagementDtoList", attendanceManagementDtoList);
 		
-		boolean notEnterFlg = studentAttendanceService.notEnterCheck(loginUserDto.getLmsUserId());
-		model.addAttribute("notEnterFlg", notEnterFlg);
+		
 
 		return "attendance/detail";
 	}
@@ -104,7 +106,7 @@ public class AttendanceController {
 	}
 
 	/**
-	 * 勤怠管理画面 『勤怠情報を直接編集する』リンク押下
+	 * 勤怠管理画面 『勤怠情報を直接編集する』リンク押下 - Task.26
 	 * 
 	 * @param model
 	 * @return 勤怠情報直接変更画面
@@ -124,7 +126,7 @@ public class AttendanceController {
 	}
 
 	/**
-	 * 勤怠情報直接変更画面 『更新』ボタン押下
+	 * 勤怠情報直接変更画面 『更新』ボタン押下 - Task.26
 	 * 
 	 * @param attendanceForm
 	 * @param model
@@ -135,6 +137,8 @@ public class AttendanceController {
 	@RequestMapping(path = "/update", params = "complete", method = RequestMethod.POST)
 	public String complete(AttendanceForm attendanceForm, Model model, BindingResult result)
 			throws ParseException {
+		//出勤／退勤時間をhh:mm形式に設定したメソッドを呼び出し
+	    studentAttendanceService.formatConversion(attendanceForm);
 
 		// 更新
 		String message = studentAttendanceService.update(attendanceForm);

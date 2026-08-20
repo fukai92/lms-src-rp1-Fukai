@@ -259,6 +259,24 @@ public class StudentAttendanceService {
 			dailyAttendanceForm
 					.setTrainingStartTime(attendanceManagementDto.getTrainingStartTime());
 			dailyAttendanceForm.setTrainingEndTime(attendanceManagementDto.getTrainingEndTime());
+			
+		    	// 出勤時間（hh:mm）を「時」と「分」に分割してセット
+				String startTime = attendanceManagementDto.getTrainingStartTime();
+				 if (startTime != null && !startTime.isEmpty()) {
+					Integer startHour = Integer.parseInt(startTime.substring(0, 2));
+					Integer startMinute = Integer.parseInt(startTime.substring(3, 5));
+					dailyAttendanceForm.setTrainingStartTimeHour(startHour);
+					dailyAttendanceForm.setTrainingStartTimeMinute(startMinute);
+						}
+
+				// 退勤時間（hh:mm）を「時」と「分」に分割してセット
+				String endTime = attendanceManagementDto.getTrainingEndTime();
+				 if (endTime != null && !endTime.isEmpty()) {
+					Integer endHour = Integer.parseInt(endTime.substring(0, 2));
+					Integer endMinute = Integer.parseInt(endTime.substring(3, 5));
+					dailyAttendanceForm.setTrainingEndTimeHour(endHour);
+					dailyAttendanceForm.setTrainingEndTimeMinute(endMinute);
+						}
 			if (attendanceManagementDto.getBlankTime() != null) {
 				dailyAttendanceForm.setBlankTime(attendanceManagementDto.getBlankTime());
 				dailyAttendanceForm.setBlankTimeValue(String.valueOf(
@@ -358,11 +376,12 @@ public class StudentAttendanceService {
 	
 	/**
 	 * 過去日の未入力チェック
+	 * @author 深井律輝 - Task.25
 	 * @param lmsUserId
 	 * @return  過去日勤怠の未入力数
 	 * @throws ParseException
 	 */
-	public boolean notEnterCheck(Integer lmsUserId) throws ParseException{
+	public boolean notEnterCheck() throws ParseException{
 		//削除フラグを0にする
 		Short deleteFlg = 0;
 		//今日の日付を取得
@@ -371,6 +390,8 @@ public class StudentAttendanceService {
 		SimpleDateFormat simpleDate = new SimpleDateFormat("yyyy/MM/dd");
 		//今日の研修日を基準方法で出力
 		Date currentDate = simpleDate.parse(simpleDate.format(date));
+		//ログインユーザーのIDを取得
+		Integer lmsUserId = loginUserDto.getLmsUserId();
 		//Mapperクラスを使用し対象の数を出力
 		Integer count = tStudentAttendanceMapper.notEnterCount(lmsUserId, deleteFlg, currentDate);
 		 return count> 0;
@@ -387,7 +408,7 @@ public class StudentAttendanceService {
 				//全体を2桁にして空いた桁は0で埋める指定
 			    String startTime = String.format("%02d:%02d", 
 			            dailyAttendanceForm.getTrainingStartTimeHour(), 
-			            dailyAttendanceForm.getTrainingStartTimeHour());
+			            dailyAttendanceForm.getTrainingStartTimeMinute());
 			    
 			    //trainingStartTimeへ入力された情報を渡す
 			    dailyAttendanceForm.setTrainingStartTime(startTime);

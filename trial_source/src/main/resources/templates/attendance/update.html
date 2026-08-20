@@ -48,8 +48,20 @@
 								<td class="w140">[[${dailyAttendanceForm.dispTrainingDate}]]</td>
 								<td class="w300">[[${dailyAttendanceForm.sectionName}]]</td>
 								<td class="w70">
-									<input type="text" th:name="|attendanceList[${stat.index}].trainingStartTime|"
-									th:value="${dailyAttendanceForm.trainingStartTime}" class="form-control" />
+									//出勤時間（時）の出力
+									<select th:name="|attendanceList[${stat.index}].trainingStartTimeHour|">
+									    <option th:each="hour : ${attendanceForm.getHourMap}" 
+				                         th:value="${hour.key}"  th:text="${hour.value}" 
+			                             th:selected="${hour.key == dailyAttendanceForm.trainingStartTimeHour}">
+		                                </option>
+	                                </select>
+	                                //出勤時間（分）の出力
+									<select th:name="|attendanceList[${stat.index}].trainingStartTimeMinute|">
+										<option th:each="minute : ${attendanceForm.getMinuteMap}"
+										 th:value="${minute.key}" th:text="${minute.value}"
+										 th:selected="${minute.key == dailyAttendanceForm.trainingStartTimeMinute}">
+										 </option>
+									</select>
 								</td>
 								<td class="w70">
 									<input type="text" th:name="|attendanceList[${stat.index}].trainingEndTime|"
