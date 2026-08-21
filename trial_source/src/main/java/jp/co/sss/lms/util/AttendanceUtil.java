@@ -131,6 +131,61 @@ public class AttendanceUtil {
 		}
 		return map;
 	}
+	
+	/**
+	 * 時間のプルダウンマップ作成
+	 * @author 深井律輝 - Task.26
+	 * @return 1時間刻みのマップを取得
+	 */
+	public LinkedHashMap<Integer, String> getHourMap(){
+		LinkedHashMap<Integer, String> hourMap = new LinkedHashMap<>();
+		hourMap.put(null, "");
+		for (int i = 0; i < 24; i++) {
+			hourMap.put(i, String.format("%02d", i));
+		}
+		return hourMap;
+	}
+	
+	/**
+	 * 分のプルダウンマップ作成
+	 * @author 深井律輝 - Task.26
+	 * @return 1分刻みのマップを作成
+	 */
+	public LinkedHashMap<Integer, String> getMinuteMap() {
+		LinkedHashMap<Integer, String> minuteMap = new LinkedHashMap<>();
+		minuteMap.put(null, "");
+		for (int i = 0; i< 60; i++) {
+			minuteMap.put(i, String.format("%02d", i));
+		}
+		return minuteMap;
+	}
+	
+	/**
+	 * 時間（時）の取得
+	 * @author 深井律輝 - Task.26
+	 * @param time 開始時刻or終了時刻
+	 * @return 時間（時）
+	 */
+	public Integer getHour(String time) {
+		if (time == null || time.isEmpty()) {
+		return null;
+	}
+	return Integer.parseInt(time.substring(0, 2));
+		
+	}
+	
+	/**
+	 * 時間（分）の取得
+	 * @author 深井律輝 - Task.26
+	 * @param time 開始時刻or終了時刻
+	 * @return 時間（分）
+	 */
+	public Integer getMinute(String time) {
+		if (time == null || time.isEmpty()) {
+			return null;
+		}
+		return Integer.parseInt(time.substring(3, 5));
+	}
 
 	/**
 	 * 研修日の判定

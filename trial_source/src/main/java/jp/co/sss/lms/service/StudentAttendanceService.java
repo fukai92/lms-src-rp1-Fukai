@@ -4,7 +4,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.springframework.beans.BeanUtils;
@@ -221,25 +220,6 @@ public class StudentAttendanceService {
 		attendanceForm.setUserName(loginUserDto.getUserName());
 		attendanceForm.setLeaveFlg(loginUserDto.getLeaveFlg());
 		attendanceForm.setBlankTimes(attendanceUtil.setBlankTime());
-		
-		// 時間マップを生成して時間を追加する
-				LinkedHashMap<Integer, String> hourMap = new LinkedHashMap<>();
-				hourMap.put(null, "");
-				for (int i = 0; i < 24; i++) {
-					hourMap.put(i, String.format("%02d", i));
-				}
-				attendanceForm.setGetHourMap(hourMap);
-
-		//分マップを生成して分を追加する
-				LinkedHashMap<Integer, String> minuteMap = new LinkedHashMap<>();
-				minuteMap.put(null, "");
-				for (int i = 0; i < 60; i++) {
-					minuteMap.put(i, String.format("%02d", i));
-				}
-				attendanceForm.setGetMinuteMap(minuteMap);
-		
-		
-		
 
 		// 途中退校している場合のみ設定
 		if (loginUserDto.getLeaveDate() != null) {
@@ -259,24 +239,17 @@ public class StudentAttendanceService {
 			dailyAttendanceForm
 					.setTrainingStartTime(attendanceManagementDto.getTrainingStartTime());
 			dailyAttendanceForm.setTrainingEndTime(attendanceManagementDto.getTrainingEndTime());
-			
-		    	// 出勤時間（hh:mm）を「時」と「分」に分割してセット
-				String startTime = attendanceManagementDto.getTrainingStartTime();
-				 if (startTime != null && !startTime.isEmpty()) {
-					Integer startHour = Integer.parseInt(startTime.substring(0, 2));
-					Integer startMinute = Integer.parseInt(startTime.substring(3, 5));
-					dailyAttendanceForm.setTrainingStartTimeHour(startHour);
-					dailyAttendanceForm.setTrainingStartTimeMinute(startMinute);
-						}
+			//深井律輝 - Task.26
+			//出勤時間（時・分）の切り出しとセット
+			String startTime = attendanceManagementDto.getTrainingStartTime();
+			dailyAttendanceForm.setTrainingStartTimeHour(attendanceUtil.getHour(startTime));
+			dailyAttendanceForm.setTrainingStartTimeMinute(attendanceUtil.getMinute(startTime));
 
-				// 退勤時間（hh:mm）を「時」と「分」に分割してセット
-				String endTime = attendanceManagementDto.getTrainingEndTime();
-				 if (endTime != null && !endTime.isEmpty()) {
-					Integer endHour = Integer.parseInt(endTime.substring(0, 2));
-					Integer endMinute = Integer.parseInt(endTime.substring(3, 5));
-					dailyAttendanceForm.setTrainingEndTimeHour(endHour);
-					dailyAttendanceForm.setTrainingEndTimeMinute(endMinute);
-						}
+			//退勤時間（時・分）の切り出しとセット
+			String endTime = attendanceManagementDto.getTrainingEndTime();
+			dailyAttendanceForm.setTrainingEndTimeHour(attendanceUtil.getHour(endTime));
+			dailyAttendanceForm.setTrainingEndTimeMinute(attendanceUtil.getMinute(endTime));
+			
 			if (attendanceManagementDto.getBlankTime() != null) {
 				dailyAttendanceForm.setBlankTime(attendanceManagementDto.getBlankTime());
 				dailyAttendanceForm.setBlankTimeValue(String.valueOf(
@@ -383,7 +356,7 @@ public class StudentAttendanceService {
 	 */
 	public boolean notEnterCheck() throws ParseException{
 		//削除フラグを0にする
-		Short deleteFlg = 0;
+		Short deleteFlg = Constants.DB_FLG_FALSE;
 		//今日の日付を取得
 		Date date = new Date();
 		//SimpleDateFormatの基準方法を設定する

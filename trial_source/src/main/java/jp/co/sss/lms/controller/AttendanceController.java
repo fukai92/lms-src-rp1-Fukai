@@ -126,7 +126,7 @@ public class AttendanceController {
 	}
 
 	/**
-	 * 勤怠情報直接変更画面 『更新』ボタン押下 - Task.26
+	 * 勤怠情報直接変更画面 『更新』ボタン押下 
 	 * 
 	 * @param attendanceForm
 	 * @param model
@@ -137,6 +137,7 @@ public class AttendanceController {
 	@RequestMapping(path = "/update", params = "complete", method = RequestMethod.POST)
 	public String complete(AttendanceForm attendanceForm, Model model, BindingResult result)
 			throws ParseException {
+		//深井律輝 - Task.26
 		//出勤／退勤時間をhh:mm形式に設定したメソッドを呼び出し
 	    studentAttendanceService.formatConversion(attendanceForm);
 
