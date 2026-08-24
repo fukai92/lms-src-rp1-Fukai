@@ -50,7 +50,7 @@
 								<td class="w140">[[${dailyAttendanceForm.sectionName}]]</td>
 								<td class="w60"></td>
 								<td class="w70">
-									<!--出勤時間（時）の出力-->
+									<!-- 深井律輝 - Task.26 出勤時間（時）の出力-->
 									<select th:name="|attendanceList[${stat.index}].trainingStartTimeHour|" class="form-control">
 									    <option th:each="hour : ${@attendanceUtil.getHourMap()}" 
 				                         th:value="${hour.key}"  th:text="${hour.value}" 
@@ -60,7 +60,7 @@
 								</td>
 								<td>:</td>
 								<td class="w70">
-	                                <!--出勤時間（分）の出力-->
+	                                <!-- 深井律輝 - Task.26 出勤時間（分）の出力-->
 									<select th:name="|attendanceList[${stat.index}].trainingStartTimeMinute|" class="form-control">
 										<option th:each="minute : ${@attendanceUtil.getMinuteMap()}"
 										 th:value="${minute.key}" th:text="${minute.value}"
@@ -69,7 +69,7 @@
 									</select>
 								</td>
 								<td class="w70">
-									<!--退勤時間（時）の出力-->
+									<!-- 深井律輝 - Task.26 退勤時間（時）の出力-->
 									<select th:name="|attendanceList[${stat.index}].trainingEndTimeHour|" class="form-control">
 										<option th:each="hour : ${@attendanceUtil.getHourMap()}"
 										 th:value="${hour.key}" th:text="${hour.value}" 
@@ -79,7 +79,7 @@
 								</td>
 								<td>:</td>
 								<td class="w70">
-									<!--退勤時間（分）の出力-->
+									<!-- 深井律輝 - Task.26 退勤時間（分）の出力-->
 									<select th:name="|attendanceList[${stat.index}].trainingEndTimeMinute|" class="form-control">
 										<option th:each="minute : ${@attendanceUtil.getMinuteMap()}"
 										 th:value="${minute.key}" th:text="${minute.value}"
@@ -109,12 +109,25 @@
 					<th:block th:if="${session.loginUserDto.role != '0001'}">
 						<input type="submit" value="戻る" name="indexCompany" class="btn btn-default" />
 					</th:block>
-					<input type="submit" value="更新" name="complete" class="btn btn-info" />
+					<!-- 深井律輝 - Task.26 更新ボタンのダイアログ表示-->
+					<input type="submit" value="更新" name="complete" class="btn btn-info" 
+					 onclick="return registCheck();"/>
 				</div>
 
 			</form>
 		</div>
 	</div>
+   <script>
+	   //深井律輝 - Task.27 更新ボタンダイアログの処理
+	   function registCheck() {
+		   if (confirm("更新します。よろしいですか？")) {
+			   return true;
+		   }
+		   else {
+			   return false;
+		   }
+	   }
+   </script>
 
 </body>
 </html>
