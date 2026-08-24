@@ -9,6 +9,7 @@ import java.util.List;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.BindingResult;
 
 import jp.co.sss.lms.dto.AttendanceManagementDto;
 import jp.co.sss.lms.dto.LoginUserDto;
@@ -27,7 +28,7 @@ import jp.co.sss.lms.util.TrainingTime;
 /**
  * 勤怠情報（受講生入力）サービス
  * 
- * @author 東京ITスクール - Task.25
+ * @author 東京ITスクール 
  */
 @Service
 public class StudentAttendanceService {
@@ -208,7 +209,7 @@ public class StudentAttendanceService {
 	/**
 	 * 勤怠フォームへ設定
 	 * 
-	 * @param attendanceManagementDtoList -Task.26
+	 * @param attendanceManagementDtoList 
 	 * @return 勤怠編集フォーム
 	 */
 	public AttendanceForm setAttendanceForm(
@@ -371,7 +372,8 @@ public class StudentAttendanceService {
 	}
 	
 	/**
-	 * 入力された出退勤の変換 - Task.26
+	 * 入力された出退勤の変換 
+	 * @author 深井律輝 - Task.26
 	 * @param attendanceForm
 	 */
 	public void formatConversion(AttendanceForm attendanceForm) {
@@ -382,21 +384,61 @@ public class StudentAttendanceService {
 			    String startTime = String.format("%02d:%02d", 
 			            dailyAttendanceForm.getTrainingStartTimeHour(), 
 			            dailyAttendanceForm.getTrainingStartTimeMinute());
-			    
 			    //trainingStartTimeへ入力された情報を渡す
 			    dailyAttendanceForm.setTrainingStartTime(startTime);
+			}else {
+				//空に戻した時に前情報を上書き
+				dailyAttendanceForm.setTrainingStartTime("");
 			}
-
 			// 入力する際に退勤時間（時）と退勤時間（分）にどちらとも入っていればtrueを返す
 			if (dailyAttendanceForm.getTrainingEndTimeHour() != null && dailyAttendanceForm.getTrainingEndTimeMinute() != null) {
 				//全体を2桁にして空いた桁は0で埋める指定
 			    String endTime = String.format("%02d:%02d", 
 			            dailyAttendanceForm.getTrainingEndTimeHour(), 
 			            dailyAttendanceForm.getTrainingEndTimeMinute());
-			    
 			    // trainingEndTimeへ入力された情報を渡す
 			    dailyAttendanceForm.setTrainingEndTime(endTime);
+			}else {
+				//空に戻した時に前情報を上書き
+				dailyAttendanceForm.setTrainingEndTime("");
 			}
+		}
+	}
+	
+	/**
+	 * 勤怠入力チェック 
+	 * @author 深井律輝 - Task.27
+	 * @param attendanceForm
+	 * @param result
+	 */
+	public void updateInputCheck(AttendanceForm attendanceForm, BindingResult result) {
+		//現在の勤怠情報を取得
+		List<DailyAttendanceForm> attendanceList = attendanceForm.getAttendanceList();
+		for(int i = 0; i < attendanceList.size(); i++) {
+			//各勤怠情報をセット
+			DailyAttendanceForm dto = attendanceList.get(i);
+			Integer startHour = dto.getTrainingStartTimeHour();
+			Integer startMinute = dto.getTrainingStartTimeMinute();
+			Integer endHour = dto.getTrainingEndTimeHour();
+			Integer endMinute = dto.getTrainingEndTimeMinute();
+			String note = dto.getNote();
+			Integer blankTime = dto.getBlankTime();
+			
+			//文字数が100より大きい場合エラーメッセージを追加
+			if(note != null && note.length() > 100) {
+				result.rejectValue("attendanceList[" + i + "].note", //勤怠ステータス
+						"maxlength", //メッセージID
+						new Object[]{"備考", "100"},// パラメーター
+						null);//デフォルトメッセージ
+		}
+		
+
+			
+			
+			
+				
+		
+			
 		}
 	}
 
