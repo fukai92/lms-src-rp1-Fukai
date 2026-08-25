@@ -427,18 +427,52 @@ public class StudentAttendanceService {
 			//文字数が100より大きい場合エラーメッセージを追加
 			if(note != null && note.length() > 100) {
 				result.rejectValue("attendanceList[" + i + "].note", //勤怠ステータス
-						"maxlength", //メッセージID
+						Constants.VALID_KEY_MAXLENGTH, //メッセージID
 						new Object[]{"備考", "100"},// パラメーター
 						null);//デフォルトメッセージ
 		}
-		
-
-			
-			
-			
-				
-		
-			
+			//出勤時間(時)、出勤時間(分)の一方が入力あり且つもう一方が入力無し
+			if(((startHour == null && startMinute != null)) || (startHour != null && startMinute == null)) {
+				result.rejectValue("attendanceList[" + i + "].trainingStartTimeHour", 
+						Constants.INPUT_INVALID,
+						new Object[]{"出勤時間"},
+						null);
+			}
+			//退勤時間(時)、退勤時間(分)の一方が入力あり且つもう一方が入力無し
+			if((endHour == null && endMinute != null) || (endHour != null && endMinute == null)) {
+				result.rejectValue("attendanceList[" + i + "].trainingEndTimeHour", 
+						Constants.INPUT_INVALID,
+						new Object[] {"退勤時間"},
+						null);
+			}
+			//出勤時間に入力無し且つ退勤時間に入力あり
+			if(startHour == null && endHour != null) {
+				result.rejectValue("attendanceList[" + i + "].trainingStartTimeHour",
+						Constants.VALID_KEY_ATTENDANCE_PUNCHINEMPTY,
+						null,
+						null);
+			}
+			//出勤時間 > 退勤時間の場合メッセージ追加
+			//比較するために分に統一し、Integer→intに戻すためnullチェックも行う
+			if(startHour != null && startMinute != null && endHour != null && endMinute != null) {
+				int startTotalTime = startHour * 60 + startMinute;
+				int endTotalTime = endHour * 60 + endMinute;
+				if(startTotalTime > endTotalTime) {
+					result.rejectValue("attendanceList[" + i + "].trainingStartTimeHour",
+							Constants.VALID_KEY_ATTENDANCE_TRAININGTIMERANGE,
+							new Object[] {i + 1},
+							null);
+				}
+			//中抜け時間が勤務時間(出勤時間～退勤時間までの時間)を超える場合メッセージ追加
+				int downTime = endTotalTime - startTotalTime;
+				if(blankTime != null && blankTime > 0 && blankTime > downTime) {
+					 result.rejectValue("attendanceList[" + i + "].blankTime",
+							 Constants.VALID_KEY_ATTENDANCE_BLANKTIMEERROR,
+							 null,
+							 null);
+				 }
+			}
+			//
 		}
 	}
 
