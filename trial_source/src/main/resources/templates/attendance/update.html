@@ -55,11 +55,13 @@
 								</th:block>
 								<td class="w140">[[${dailyAttendanceForm.dispTrainingDate}]]</td>
 								<td class="w140">[[${dailyAttendanceForm.sectionName}]]</td>
-								<td class="w60"></td>
+								<!-- 深井律輝 -Task.28 -->
+								<!-- 定時ボタンの追加 -->
+								<td class="w60"><input type ="button" class="btn btn-success" value="定時" th:onclick="|setFixedTime(${stat.index})|" /></td>
 								<td class="w70">
-									<!-- 深井律輝 - Task.26 -->
+									<!-- 深井律輝 - Task.26,28 -->
 									<!-- 出勤時間（時）の出力 -->
-									<select th:name="|attendanceList[${stat.index}].trainingStartTimeHour|" class="form-control">
+									<select th:id="|startHour_${stat.index}|" th:name="|attendanceList[${stat.index}].trainingStartTimeHour|" class="form-control">
 									    <option th:each="hour : ${@attendanceUtil.getHourMap()}" 
 				                         th:value="${hour.key}"  th:text="${hour.value}" 
 			                             th:selected="${hour.key == dailyAttendanceForm.trainingStartTimeHour}">
@@ -68,9 +70,9 @@
 								</td>
 								<td>:</td>
 								<td class="w70">
-	                                <!-- 深井律輝 - Task.26 -->
+	                                <!-- 深井律輝 - Task.26,28 -->
 	                                <!-- 出勤時間（分）の出力 -->
-									<select th:name="|attendanceList[${stat.index}].trainingStartTimeMinute|" class="form-control">
+									<select th:id="|startMinute_${stat.index}|" th:name="|attendanceList[${stat.index}].trainingStartTimeMinute|" class="form-control">
 										<option th:each="minute : ${@attendanceUtil.getMinuteMap()}"
 										 th:value="${minute.key}" th:text="${minute.value}"
 										 th:selected="${minute.key == dailyAttendanceForm.trainingStartTimeMinute}">
@@ -78,9 +80,9 @@
 									</select>
 								</td>
 								<td class="w70">
-									<!-- 深井律輝 - Task.26 -->
+									<!-- 深井律輝 - Task.26,28 -->
 									<!-- 退勤時間（時）の出力 -->
-									<select th:name="|attendanceList[${stat.index}].trainingEndTimeHour|" class="form-control">
+									<select th:id="|endHour_${stat.index}|" th:name="|attendanceList[${stat.index}].trainingEndTimeHour|" class="form-control">
 										<option th:each="hour : ${@attendanceUtil.getHourMap()}"
 										 th:value="${hour.key}" th:text="${hour.value}" 
 										 th:selected="${hour.key == dailyAttendanceForm.trainingEndTimeHour}">
@@ -89,9 +91,9 @@
 								</td>
 								<td>:</td>
 								<td class="w70">
-									<!-- 深井律輝 - Task.26 -->
+									<!-- 深井律輝 - Task.26,28 -->
 									<!-- 退勤時間（分）の出力 -->
-									<select th:name="|attendanceList[${stat.index}].trainingEndTimeMinute|" class="form-control">
+									<select th:id="|endMinute_${stat.index}|" th:name="|attendanceList[${stat.index}].trainingEndTimeMinute|" class="form-control">
 										<option th:each="minute : ${@attendanceUtil.getMinuteMap()}"
 										 th:value="${minute.key}" th:text="${minute.value}"
 										 th:selected="${minute.key == dailyAttendanceForm.trainingEndTimeMinute}">
@@ -141,6 +143,22 @@
 		   }
 	   }
    </script>
+   <script>
+    //深井律輝 - Task.28
+    //定時ボタン押下時の処理
+    function setFixedTime(index) {
+        var defaultStartHour   = "9"; 
+        var defaultStartMinute = "0";
+        var defaultEndHour     = "18";
+        var defaultEndMinute   = "0";
+        //idから情報を取得
+        document.getElementById("startHour_" + index).value = defaultStartHour;
+        document.getElementById("startMinute_" + index).value = defaultStartMinute;
+        document.getElementById("endHour_" + index).value = defaultEndHour;
+        document.getElementById("endMinute_" + index).value = defaultEndMinute;
+    }
+   </script>
+   
 
 </body>
 </html>
