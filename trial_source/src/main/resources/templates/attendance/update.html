@@ -30,7 +30,9 @@
 					</ul>
 				</div>
 				<table class="table table-hover dataTable no-footer">
-					<thead>
+					<!-- 深井律輝 - Task.29 -->
+					<!-- スクロールバーの表示 -->
+					<thead style="display: block;">
 						<tr>
 							<th class="w140">日付</th>
 							<th class="w140">コース内容</th>
@@ -42,7 +44,9 @@
 							<th class="w140">備考</th>
 						</tr>
 					</thead>
-					<tbody>
+					<!-- 深井律輝 - Task.29 -->
+					<!-- スクロールバーの表示 -->
+					<tbody style="display: block; overflow-y: scroll; height: 560px;">
 						<th:block th:each="dailyAttendanceForm, stat : ${attendanceForm.attendanceList}">
 							<tr>
 								<th:block>
